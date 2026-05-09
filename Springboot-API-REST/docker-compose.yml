@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  back-ventas:
+    build: .
+    container_name: back-ventas-app
+    ports:
+      - "8081:8081"
+    networks:
+      - red-interna-ventas
+    depends_on:
+      - db-ventas
+
+  db-ventas:
+    image: mysql:8.0
+    container_name: db-ventas
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ventas_db
+    # Requisito IE3: Persistencia
+    volumes:
+      - datos-db-ventas:/var/lib/mysql
+    networks:
+      - red-interna-ventas
+
+networks:
+  # Requisito IE2: Red interna
+  red-interna-ventas:
+    driver: bridge
+
+volumes:
+  # Definición de volumen
+  datos-db-ventas:
