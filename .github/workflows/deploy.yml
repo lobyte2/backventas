@@ -45,6 +45,5 @@ jobs:
             sudo docker stop backventas || true
             sudo docker rm backventas || true
             
-            # MAPEO DE PUERTOS: 
-           
+            
             sudo docker run -d -p 8082:8080 --name backventas ${{ secrets.DOCKER_USERNAME }}/backventas:latest
