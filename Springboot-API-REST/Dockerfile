@@ -1,20 +1,21 @@
 # Etapa 1: Build
-FROM maven:3.8.5-openjdk-17 AS build
+FROM maven:3.8.5-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Etapa 2: Runtime (Seguridad y Optimización)
-FROM openjdk:17-jdk-slim
+# Etapa 2: Runtime
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Usuario no root (Requisito de seguridad)
+# Ejecución con usuario no root (Seguridad)
 RUN addgroup --system springuser && adduser --system springuser --ingroup springuser
 USER springuser
 
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8081 
-# Nota: He puesto 8081 por si quieres correr ambos backends a la vez localmente
-ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# IMPORTANTE: Cambiamos el puerto al 8081 para que no choque con el otro microservicio
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8081"]
