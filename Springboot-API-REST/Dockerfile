@@ -10,12 +10,12 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Ejecución con usuario no root (Seguridad)
+# Usuario no root para seguridad (Requisito IE1 de tu pauta)
 RUN addgroup --system springuser && adduser --system springuser --ingroup springuser
 USER springuser
 
 COPY --from=build /app/target/*.jar app.jar
 
-# IMPORTANTE: Cambiamos el puerto al 8081 para que no choque con el otro microservicio
-EXPOSE 8081
-ENTRYPOINT ["java", "-jar", "app.jar", "--server.port=8081"]
+# USAMOS EL PUERTO ORIGINAL DEL PROFE (8080)
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

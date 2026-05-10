@@ -3,7 +3,7 @@ name: Deploy Ventas a AWS EC2
 on:
   push:
     branches:
-      - deploy  # Solo se activa cuando subes cambios a la rama deploy
+      - deploy
 
 jobs:
   build-and-deploy:
@@ -18,7 +18,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      # Ajustamos la ruta a tu carpeta Springboot-API-REST
       - name: Compilar proyecto con Maven
         working-directory: ./Springboot-API-REST
         run: mvn clean package -DskipTests
@@ -45,5 +44,7 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backventas:latest
             sudo docker stop backventas || true
             sudo docker rm backventas || true
-            # IMPORTANTE: Usamos el puerto 8081 para que no choque con Despachos
-            sudo docker run -d -p 8081:8081 --name backventas ${{ secrets.DOCKER_USERNAME }}/backventas:latest
+            
+            # MAPEO DE PUERTOS: 
+           
+            sudo docker run -d -p 8082:8080 --name backventas ${{ secrets.DOCKER_USERNAME }}/backventas:latest
